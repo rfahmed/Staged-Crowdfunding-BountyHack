@@ -1,25 +1,72 @@
 'reach 0.1';
 
-const commonInterface = {
-  fundingGoal: Fun([], UInt), //current funding goal for this campaign
-  fundsPledged: Fun([], UInt), //returns value of current funds pledged
-  fundsRaised: Fun([], UInt) // returns value of current funds raised
-};
-
-const crowdMember = { // campaign participant
-  pledgedFunds: Fun([], UInt), // returns value of pledged funds
-  extractedFunds: Fun([UInt], UInt) // takes in milestone number returns value of extracted funds
-  };
-
-const Founder = { // person running campaign
-  numMilestones: Fun([], UInt), //returns number of milestones in this project
-  milestonesReached: Fun([], UInt) //returns number of most recent milestone
-};
-
 export const main =
-  Reach.App(
-    {},
-    [ Participant('crowdMember', {}),
-      Participant('Receiver', {}),
-      Participant('Bystander', {}) ],
-    (Funder, Receiver, Bystander) => {
+    Reach.App(
+        {},
+        [Participant('Alice', {
+            //...commonInterface,
+            setGoal: Fun([], UInt), //sets the goal for the fundraising campaign and returns it
+        }),
+        Participant('Bob', {
+            //...commonInterface,
+            donate: Fun([], UInt), //donates some amount of money to the goal and returns that it
+        })],
+        (A, B) => {
+            //Alice picks a fundraising goal
+            A.only(() => {
+                const goal = declassify(interact.setGoal());
+            });
+            A.publish(goal);
+            commit();
+
+            //Bob will contribute money to the goal
+            B.only(() => {
+                const donationAmount = declassify(interact.donate());
+            });
+            B.publish(donationAmount).pay(donationAmount);
+
+
+            // //Keep donating until the goal is reached
+            // var [total, released] = [donationAmount, 0];
+            // invariant(total == donationAmount);
+            // while (total <= goal) {
+            //     commit();
+
+            //     B.only(() => {
+            //         const donate = declassify(interact.donate());
+            //     });
+            //     B.publish(donate).pay(donate);
+            //     total = total + donate;
+            //     //Compute if money gets released or not
+
+            //     //Half of the donated funds are released when campaign reaches 50% (25% of overall funds)
+            //     //Remaining funds released when the goal is met
+
+            //     continue;
+            // }
+
+            // const isStageMet = 0;
+            // const isGoalMet = 1;
+
+            // if(isGoalMet){
+            //     transfer(goal).to(A);
+            // }else if(isStageMet){
+            //     transfer(0.25 * goal).to(A);
+            // }else{
+            //     //do nothing
+            // }
+
+            // commit();
+
+            // //Tell everyone and exit
+            // each([A, B], () => {
+            //     //interact.notifyAll();
+            // });
+
+            transfer(donationAmount).to(A);
+
+            commit();
+
+            exit();
+        }
+    );
