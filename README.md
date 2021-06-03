@@ -3,7 +3,9 @@ A project for Bounty Hack 2021 [https://bostonblockchainweek.com/event/bounty-ha
 
 ## Instructions
 
-To run, type `$ ./reach run` into the command line.
+The current iteration of the dapp is interactive in a manner similar to tutorial 8, where Alice sets a crowdfunding goal and Bob gets to contribute.
+
+To run, first type `$ make build` to compile changes. Then `$ make run-alice` in one terminal and `$ make run-bob` in another terminal in the same directory.
 
 ## Debugging Information
 

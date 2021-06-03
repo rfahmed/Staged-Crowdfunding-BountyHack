@@ -1,27 +1,44 @@
 'reach 0.1';
 
+const commonInterface = {
+    informTimeout: Fun([], Null),
+}
+
+const DEADLINE = 10;
+
 export const main =
     Reach.App(
         {},
         [Participant('Alice', {
-            //...commonInterface,
+            ...commonInterface,
+            goal: UInt,
             setGoal: Fun([], UInt), //sets the goal for the fundraising campaign and returns it
         }),
         Participant('Bob', {
-            //...commonInterface,
+            ...commonInterface,
+            contribution: UInt,
             donate: Fun([], UInt), //donates some amount of money to the goal and returns that it
         })],
         (A, B) => {
+
+            const informTimeout = () => {
+                each([A, B], () => {
+                    interact.informTimeout();
+                });
+            };
+
             //Alice picks a fundraising goal
             A.only(() => {
-                const goal = declassify(interact.setGoal());
+                //const goal = declassify(interact.setGoal());
+                const goal = declassify(interact.goal);
             });
             A.publish(goal);
             commit();
 
             //Bob will contribute money to the goal
             B.only(() => {
-                const donationAmount = declassify(interact.donate());
+                //const donationAmount = declassify(interact.donate());
+                const donationAmount = declassify(interact.contribution);
             });
             B.publish(donationAmount).pay(donationAmount);
 
