@@ -44,10 +44,29 @@ import { ask, yesno, done } from '@reach-sh/stdlib/ask.mjs';
 
     const interact = { ...stdlib.hasRandom };
 
-    interact.informTimeout = () => {
+    interact.informTimeout = async () => {
         console.log(`There was a timeout.`);
-        process.exit(1);
+        const after = await getBalance();
+        console.log(`Your balance is ${after}`);
+        process.exit(0);
     };
+
+    interact.seeGoal = (goal) => {
+        console.log(`Alice set the fundraising goal to ${fmt(goal)}.`);
+    };
+
+    interact.seeThreshold = (thresh) => {
+        console.log(`The threshold is ${fmt(thresh)}`);
+    }
+
+    interact.seeDonated = (amt, tot) => {
+        console.log(`Someone just donated ${fmt(amt)}.`);
+        console.log(`The total donation amount is ${fmt(tot)}`);
+    }
+
+    interact.seeReleased = (amt) => {
+        console.log(`${fmt(amt)} was just released to Alice`);
+    }
 
     if (isAlice) {
         const amt = await ask(
@@ -55,23 +74,30 @@ import { ask, yesno, done } from '@reach-sh/stdlib/ask.mjs';
             stdlib.parseCurrency
         );
         interact.goal = amt;
+        interact.threshold = stdlib.div(amt, 2);
     } else {
-        const amt = await ask(
-            `How much do you want to contribute?`,
-            stdlib.parseCurrency
-        );
-        interact.contribution = amt;
-        // interact.acceptWager = async (amt) => {
-        //     const accepted = await ask(
-        //         `Do you accept the wager of ${fmt(amt)}?`,
-        //         yesno
-        //     );
-        //     if (accepted) {
-        //         return;
-        //     } else {
-        //         process.exit(0);
-        //     }
-        // };
+        interact.acceptGoal = async (amt) => {
+            const accepted = await ask(
+                `Do you accept the goal of ${fmt(amt)}?`,
+                yesno
+            );
+            if (accepted) {
+                console.log(`You have accepted the goal of ${fmt(amt)}`);
+                return;
+            } else {
+                console.log(`Denied. Exiting program.`);
+                process.exit(0);
+            }
+        };
+        interact.getContribution = async () => {
+            const amt = await ask(
+                `How much do you want to contribute?`,
+                stdlib.parseCurrency
+            );
+            interact.contribution = amt;
+            return amt;
+        };
+        
     }
 
     const part = isAlice ? backend.Alice : backend.Bob;
@@ -82,7 +108,7 @@ import { ask, yesno, done } from '@reach-sh/stdlib/ask.mjs';
 
     done();
 
-
+// Non-interactive stuff below, kept for reference
     // const startingBalance = stdlib.parseCurrency(10);
 
     // const accAlice = await stdlib.newTestAccount(startingBalance);
