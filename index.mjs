@@ -68,6 +68,12 @@ import { ask, yesno, done } from '@reach-sh/stdlib/ask.mjs';
         console.log(`${fmt(amt)} was just released to Alice`);
     }
 
+    // interact.seeDebug = (first, second, third) => {
+    //     console.log(`First value is ${fmt(first)}`);
+    //     console.log(`Second value is ${fmt(second)}`);
+    //     console.log(`Third value is ${third}`);
+    // }
+
     if (isAlice) {
         const amt = await ask(
             `How much do you want to crowdfund?`,

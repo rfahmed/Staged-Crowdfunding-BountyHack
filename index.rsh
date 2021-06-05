@@ -6,6 +6,7 @@ const commonInterface = {
     seeDonated: Fun([UInt, UInt], Null),
     seeThreshold: Fun([UInt], Null),
     seeReleased: Fun([UInt], Null),
+    // seeDebug: Fun([UInt, UInt, Bool], Null),
 }
 
 const DEADLINE = 2;
@@ -87,10 +88,13 @@ export const main =
                 //Half of the donated funds are released when campaign reaches 50% (25% of overall funds)
                 //Remaining funds released when the goal is met
 
+                const isStaged = ((total + donate) >= (threshold)) ? true : false;
 
-                const isStaged = ((total + donate) >= (threshold)) ? 1 : 0;
+                // each([A, B], () => {
+                //     interact.seeDebug(total + donate, threshold, isStaged);
+                // });
 
-                if (isStaged) {
+                if (isStaged && released == 0) {
                     const rel = balance() / 2;
                     transfer(rel).to(A);
 
@@ -98,10 +102,15 @@ export const main =
                     each([A, B], () => {
                         interact.seeReleased(rel);
                     });
-                }
 
-                [total, released] = [total + donate, released + balance() / 2];
-                continue;
+                    [total, released] = [total + donate, released + rel];
+                    continue;
+                } else {
+                    [total, released] = [total + donate, released];
+                    continue;
+                }
+                
+                // continue;
             }
 
             //Release the remaining funds
