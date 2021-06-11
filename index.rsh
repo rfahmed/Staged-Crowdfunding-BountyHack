@@ -8,6 +8,7 @@ const commonInterface = {
     seeDonated: Fun([UInt, UInt], Null),
     seeThreshold: Fun([thresh_arr], Null),
     seeReleased: Fun([UInt], Null),
+    getNextThreshold: Fun([thresh_arr, UInt], UInt),
     // seeDebug: Fun([UInt, UInt, Bool], Null),
 }
 
@@ -72,7 +73,7 @@ export const main =
             })
 
             //Keep donating until the goal is reached
-            var [total, released] = [donationAmount, 0];
+            var [total, released, currGoal] = [donationAmount, 0, 0];
             invariant(true);  //Shuts up the compiler, but we should actually find a good invariant to check
             while (total <= goal && goal > balance()) {
                 commit();
@@ -84,10 +85,13 @@ export const main =
 
                 //Publish the donation and pay into contract
                 B.publish(donate).pay(donate);
-                
                 //Notify everyone that someone just donated
                 each([A, B], () => {
-                    interact.seeDonated(donate, total + donate);
+                    interact.seeDonated(donate, (total + donate));
+                });
+
+                each([A, B], () => {
+                    currGoal = interact.getNextThreshold(threshold, (total + donate));
                 });
 
                 //Compute if money gets released or not
@@ -95,18 +99,7 @@ export const main =
                 //Half of the donated funds are released when campaign reaches 50% (25% of overall funds)
                 //Remaining funds released when the goal is met
                 // console.log(threshold)
-                const currGoal = 0;
-                const fullTotal = total + donate;
-                const i = 0;
-                invariant(true);
-                while (i < 5) {
-                    if (threshold[i] > fullTotal) {
-                        currGoal = threshold[i];
-                        break;
-                    }
-                    i++;
-                    continue;
-                }
+
 
                 const isStaged = ((total + donate) >= (currGoal)) ? true : false;
                 // each([A, B], () => {

@@ -75,6 +75,15 @@ import { ask, yesno, done } from '@reach-sh/stdlib/ask.mjs';
         console.log(`${fmt(amt)} was just released to Alice`);
     }
 
+    interact.getNextThreshold = (thresh, amt) => {
+        for (var i = 0; i < 5; i++) {
+            if (thresh[i] > amt) {
+                return thresh[i];
+            } 
+        }
+        return -1;
+    }
+
     // interact.seeDebug = (first, second, third) => {
     //     console.log(`First value is ${fmt(first)}`);
     //     console.log(`Second value is ${fmt(second)}`);
