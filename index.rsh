@@ -97,10 +97,15 @@ export const main =
                 // console.log(threshold)
                 const currGoal = 0;
                 const fullTotal = total + donate;
-                for (i = 0; i < 5; i++) {
+                const i = 0;
+                invariant(true);
+                while (i < 5) {
                     if (threshold[i] > fullTotal) {
                         currGoal = threshold[i];
+                        break;
                     }
+                    i++;
+                    continue;
                 }
 
                 const isStaged = ((total + donate) >= (currGoal)) ? true : false;

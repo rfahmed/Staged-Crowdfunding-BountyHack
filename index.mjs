@@ -88,7 +88,7 @@ import { ask, yesno, done } from '@reach-sh/stdlib/ask.mjs';
         );
         interact.goal = amt;
         const thresholds = await ask(
-            'What would you like the fundraising thresholds to be (enter comma separated list)?'
+            'What would you like the fundraising thresholds to be (enter comma separated list (limit is 5 but if you have less enter 0s at the))?'
         );
         const newArr = JSON.parse("[" + thresholds + "]");
         const finalArr = Array.from(newArr);
