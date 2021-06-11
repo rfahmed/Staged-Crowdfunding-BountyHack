@@ -1,4 +1,4 @@
-import { loadStdlib } from '@reach-sh/stdlib';
+import { loadStdlib } from '@reach-sh/stdlib'; 
 import * as backend from './build/index.main.mjs';
 import { ask, yesno, done } from '@reach-sh/stdlib/ask.mjs';
 
@@ -15,8 +15,15 @@ import { ask, yesno, done } from '@reach-sh/stdlib/ask.mjs';
     if (createAcc) {
         acc = await stdlib.newTestAccount(stdlib.parseCurrency(1000));
     } else {
-        const secret = await ask(`What is your account secret?`, (x => x));
-        acc = await stdlib.newAccountFromSecret(secret);
+        const wantSecret = await ask('Would you like to enter an account secret?', yesno);
+        if (wantSecret){
+            const secret = await ask(`What is your account secret?`, (x => x));
+            acc = await stdlib.newAccountFromSecret(secret);
+        }
+        else {
+            console.log('Exiting Program, try again if you wish to login');
+            process.exit(0)
+        }
     }
 
     let ctc = null;
@@ -56,7 +63,7 @@ import { ask, yesno, done } from '@reach-sh/stdlib/ask.mjs';
     };
 
     interact.seeThreshold = (thresh) => {
-        console.log(`The threshold is ${fmt(thresh)}`);
+        console.log(`The thresholds are: ` + thresh);
     }
 
     interact.seeDonated = (amt, tot) => {
@@ -80,7 +87,13 @@ import { ask, yesno, done } from '@reach-sh/stdlib/ask.mjs';
             stdlib.parseCurrency
         );
         interact.goal = amt;
-        interact.threshold = stdlib.div(amt, 2);
+        const thresholds = await ask(
+            'What would you like the fundraising thresholds to be (enter comma separated list)?'
+        );
+        const newArr = JSON.parse("[" + thresholds + "]");
+        const finalArr = Array.from(newArr);
+        console.log(typeof(finalArr))
+        interact.threshold = finalArr;
     } else {
         interact.acceptGoal = async (amt) => {
             const accepted = await ask(
@@ -96,12 +109,19 @@ import { ask, yesno, done } from '@reach-sh/stdlib/ask.mjs';
             }
         };
         interact.getContribution = async () => {
-            const amt = await ask(
-                `How much do you want to contribute?`,
-                stdlib.parseCurrency
-            );
-            interact.contribution = amt;
-            return amt;
+            const wantDonate = await ask('Would you like to donate funds?', yesno);
+            if (wantDonate) {
+                const amt = await ask(
+                    `How much do you want to contribute?`,
+                    stdlib.parseCurrency
+                );
+                interact.contribution = amt;
+                return amt;
+            }
+            else {
+                console.log("Thank you for donating! Please come again.");
+                process.exit(0);
+            }
         };
         
     }
