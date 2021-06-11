@@ -9,6 +9,7 @@ The current iteration of the dapp is an interactive crowdfunding application bet
 ## Issues and Improvements
 
 * The application currently does not work with muliple Bobs.
+* Timeouts do not work
 * No web based graphical user interface exists. Everything runs in the command line.
 
 ## Instructions
