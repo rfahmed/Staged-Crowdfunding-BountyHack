@@ -34,11 +34,11 @@ class App extends React.Component {
   render() { return renderView(this, AppViews); }
 }
 
-class Player extends React.Component {
+class Donator extends React.Component {
   random() { return reach.hasRandom.random(); }
-  async getHand() { // Fun([], UInt)
+  async getDonation() { // Fun([], UInt)
     const hand = await new Promise(resolveHandP => {
-      this.setState({view: 'GetHand', playable: true, resolveHandP});
+      this.setState({view: 'GetDonation', playable: true, resolveHandP});
     });
     this.setState({view: 'WaitingForResults', hand});
     return handToInt[hand];
