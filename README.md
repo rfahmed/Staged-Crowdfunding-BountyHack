@@ -4,7 +4,7 @@ A project for Bounty Hack 2021 [https://bostonblockchainweek.com/event/bounty-ha
 
 ## Current State
 
-The current iteration of the dapp is an interactive crowdfunding application between Alice (the creator of the crowdfunding campaign) and Bob (a member of the public) with one threshold at 50%. Upon reaching the threshold, 50% of the money raised up to that point will be released to Alice.
+The current iteration of the dapp is an interactive crowdfunding application between Alice (the creator of the crowdfunding campaign) and Bob (a member of the public) with up to 5 thresholds.
 
 ## Issues and Improvements
 

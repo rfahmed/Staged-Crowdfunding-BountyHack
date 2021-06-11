@@ -95,11 +95,33 @@ import { ask, yesno, done } from '@reach-sh/stdlib/ask.mjs';
         // console.log(typeof(finalArr))
         interact.threshold = finalArr;
 
-        interact.getNextThreshold = (thresh, amt) => {
-            const found = thresh.find(element => stdlib.ge(amt, element));
-            console.log(`found is ${found}`);
-            return stdlib.parseCurrency(found);
+        interact.getNextThreshold = (thresh, amt, goal) => {
+            // console.log(`goal is type ${typeof(goal)} and thresh[i] is type ${typeof(thresh[0])}`);
+            for(var i = 0; i < 5; i++){
+                // console.log(`thresh[i] is ${thresh[i]} amt is ${fmt(amt)}`);
+                // console.log(`thresh[i] > amt ? ${stdlib.gt(thresh[i], fmt(amt))}`);
+                if(stdlib.gt(thresh[i], fmt(amt))){
+                    // console.log(`returned thresh[i] is ${stdlib.bigNumberify(thresh[i])}`);
+                    return stdlib.parseCurrency(stdlib.bigNumberify(thresh[i]));
+                }
+            }
+            // console.log(`returned goal is ${goal}`);
+            return goal;
         }
+
+        interact.getPrevThreshold = (thresh, amt, goal) => {
+            for(var i = 4; i >= 0; i--){
+                if(stdlib.lt(thresh[i], fmt(amt))){
+                    return stdlib.parseCurrency(stdlib.bigNumberify(thresh[i]));
+                }
+            }
+            return thresh[0];
+        }
+
+        interact.getFirstThreshold = (thresh) => {
+            return stdlib.parseCurrency(stdlib.bigNumberify(thresh[i]));
+        }
+
     } else {
         interact.acceptGoal = async (amt) => {
             const accepted = await ask(
