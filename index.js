@@ -7,11 +7,6 @@ import './index.css';
 import * as backend from './build/index.main.mjs';
 import * as reach from '@reach-sh/stdlib/ETH';
 
-const handToInt = {'ROCK': 0, 'PAPER': 1, 'SCISSORS': 2};
-const intToOutcome = ['Bob wins!', 'Draw!', 'Alice wins!'];
-const {standardUnit} = reach;
-const defaults = {defaultFundAmt: '10', defaultWager: '3', standardUnit};
-
 class App extends React.Component {
   constructor(props) {
     super(props);
