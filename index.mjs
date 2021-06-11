@@ -16,7 +16,7 @@ const numOfBobs = 10;
     );
 
     const ctcAlice = accAlice.deploy(backend);
-    const ctcBob = accBob.attach(backend, ctcAlice.getInfo());
+    // const ctcBob = accBob.attach(backend, ctcAlice.getInfo());
 
     const fmt = (x) => stdlib.formatCurrency(x, 4);
     const getBalance = async (who) => fmt(await stdlib.balanceOf(who));
@@ -25,6 +25,19 @@ const numOfBobs = 10;
     const commonInterface = (Who) => ({
         informTimeout: () => {
             console.log(`${Who} observed a timeout.`);
+        },
+        
+        seeGoal: (amt) => {
+            console.log(`The goal has been set to ${fmt(amt)}`);
+        },
+
+        seeThreshold: (thresh) => {
+            console.log(`The thresholds are: ` + thresh);
+        },
+
+        seeDonation: (amt, tot) => {
+            console.log(`Someone just donated ${fmt(amt)}`);
+            console.log(`Total donated is now ${fmt(tot)}`);
         }
     });
 
@@ -33,24 +46,46 @@ const numOfBobs = 10;
             ctcAlice, {
             ...commonInterface('Alice'),
             setGoal: () => {
-                const amount = stdlib.parseCurrency(Math.floor(Math.random() * 10) + 5);
-                console.log(`Alice sets the goal to ${fmt(amount)}.`);
+                // const amount = stdlib.parseCurrency(Math.floor(Math.random() * 10) + 5);
+                // Hard code for testing
+                const amount = stdlib.parseCurrency(100);
                 return amount;
             },
-            acceptFunds: (amount) => {
-                console.log(`Alice has accepted ${fmt(amount)}.`);
+
+            setThreshold: () => {
+                //Hard code for testing
+                const thresh = [10,20,30,40,50];
+                return thresh;
             }
         }),
-        backend.Bob(
-            ctcBob, {
-            ...commonInterface('Bob'),
-            donate: () => {
-                const amount = stdlib.parseCurrency(Math.floor(Math.random() * 3) + 1);
-                console.log(`Bob donates ${fmt(amount)} to the campaign.`);
-                return amount;
-            }
-        }),
-    ]);
+    ].concat(
+        accBobArray.map((accBob, i) => {
+            const ctcBob = accBob.attach(backend, ctcAlice.getInfo());
+            return backend.Bob(
+                ctcBob, {
+                ...commonInterface('Bob'),
+    
+                acceptGoal: (goal) => {
+                    console.log(`Bob number ${i} has accepted the goal of ${fmt(goal)}`);
+                    return true;
+                },
+    
+                acceptThresholds: (thresh) => {
+                    console.log(`Bob number ${i} has accepted the thresholds of ` + thresh);
+                    return true;
+                },
+
+                donate: () => {
+                    const amt = stdlib.parseCurrency(Math.floor(Math.random() * 60) + 1);
+                    console.log(`Bob number ${i} donates ${fmt(amt)}`);
+                    return amt;
+                }
+            });
+        })
+    ));
+
+    const afterAlice = await getBalance(accAlice);
+    console.log(`Alice now has ${fmt(afterAlice)}`);
 
     done();
 
