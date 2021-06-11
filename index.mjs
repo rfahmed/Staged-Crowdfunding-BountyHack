@@ -96,20 +96,9 @@ import { ask, yesno, done } from '@reach-sh/stdlib/ask.mjs';
         interact.threshold = finalArr;
 
         interact.getNextThreshold = (thresh, amt) => {
-            // console.log(`amt is ${fmt(amt)}`);
-            // console.log(`first threshold is ${thresh[0]}`);
-            for (var i = 0; i < 5; i++) {
-                // console.log(`before the if, i is ${i}`);
-                console.log(`thresh[i] > amt? ${stdlib.ge(amt, thresh[i])}`);
-                // console.log(`typeof t ${typeof(thresh[i])} and typeof amt ${typeof(amt)}`);
-                //if (stdlib.fxgt(thresh[i], amt)) {
-                if(stdlib.ge(amt, thresh[i])) {
-                    console.log(`The next threshold is ${thresh[i]}. amt is ${fmt(amt)}. i is ${i}`);
-                    //return thresh[i];
-                    return stdlib.parseCurrency(thresh[i]);
-                } 
-            }
-            return -1;
+            const found = thresh.find(element => stdlib.ge(amt, element));
+            console.log(`found is ${found}`);
+            return stdlib.parseCurrency(found);
         }
     } else {
         interact.acceptGoal = async (amt) => {
