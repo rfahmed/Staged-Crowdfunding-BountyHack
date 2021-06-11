@@ -2,14 +2,13 @@
 
 const thresh_arr = Array(UInt, 5);
 
-const commonInterface = { 
+const commonInterface = {
     informTimeout: Fun([], Null),
     seeGoal: Fun([UInt], Null),
     seeDonated: Fun([UInt, UInt], Null),
     seeThreshold: Fun([thresh_arr], Null),
     seeReleased: Fun([UInt], Null),
-    getNextThreshold: Fun([thresh_arr, UInt], UInt),
-    // seeDebug: Fun([UInt, UInt, Bool], Null),
+    seeDebug: Fun([UInt, UInt], Null),
 }
 
 const DEADLINE = 2;
@@ -21,6 +20,7 @@ export const main =
             ...commonInterface,
             goal: UInt,
             threshold: thresh_arr,
+            getNextThreshold: Fun([thresh_arr, UInt], UInt),
             setGoal: Fun([], UInt), //sets the goal for the fundraising campaign and returns it
         }),
         Participant('Bob', {
@@ -70,60 +70,181 @@ export const main =
 
             each([A, B], () => {
                 interact.seeDonated(donationAmount, donationAmount);
-            })
+            });
 
-            //Keep donating until the goal is reached
-            var [total, released, currGoal] = [donationAmount, 0, 0];
-            invariant(true);  //Shuts up the compiler, but we should actually find a good invariant to check
-            while (total <= goal && goal > balance()) {
-                commit();
+            commit();
 
-                //Bob will contribute more money
-                B.only(() => {
-                    const donate = declassify(interact.getContribution());
-                });
+            A.only(() => {
+                const firstGoal = declassify(interact.getNextThreshold(threshold, (donationAmount)));
+            });
+            A.publish(firstGoal);
 
-                //Publish the donation and pay into contract
-                B.publish(donate).pay(donate);
-                //Notify everyone that someone just donated
+            //Money release check
+            const isReached = ((donationAmount) >= (firstGoal)) ? true : false;
+            // each([A, B], () => {
+            //     interact.seeDebug(total + donate, threshold, isStaged);
+            // });
+
+            if (isReached) {
+                const relFirst = firstGoal; //balance();
+                const balFirst = balance();
+
                 each([A, B], () => {
-                    interact.seeDonated(donate, (total + donate));
+                    interact.seeDebug(firstGoal, 0);
                 });
 
+                if (relFirst > balFirst) {
+                    transfer(balance()).to(A);
+                    commit();
+                    exit();
+                } else {
+                    transfer(relFirst).to(A);
+                }
+
+                //Notify everyone about the partial release of funds
                 each([A, B], () => {
-                    currGoal = interact.getNextThreshold(threshold, (total + donate));
+                    interact.seeReleased(relFirst);
                 });
 
-                //Compute if money gets released or not
+                var [total, released] = [donationAmount, relFirst];
+                invariant(true);  //Shuts up the compiler, but we should actually find a good invariant to check
+                while (total <= goal && goal > balance()) {
+                    commit();
 
-                //Half of the donated funds are released when campaign reaches 50% (25% of overall funds)
-                //Remaining funds released when the goal is met
-                // console.log(threshold)
-
-
-                const isStaged = ((total + donate) >= (currGoal)) ? true : false;
-                // each([A, B], () => {
-                //     interact.seeDebug(total + donate, threshold, isStaged);
-                // });
-
-                if (isStaged && released == 0) {
-                    const rel = balance();
-                    transfer(rel).to(A);
-
-                    //Notify everyone about the partial release of funds
-                    each([A, B], () => {
-                        interact.seeReleased(rel);
+                    //Bob will contribute more money
+                    B.only(() => {
+                        const donate = declassify(interact.getContribution());
                     });
 
-                    [total, released] = [total + donate, released + rel];
-                    continue;
-                } else {
-                    [total, released] = [total + donate, released];
-                    continue;
+                    //Publish the donation and pay into contract
+                    B.publish(donate).pay(donate);
+                    //Notify everyone that someone just donated
+                    each([A, B], () => {
+                        interact.seeDonated(donate, (total + donate));
+                    });
+
+                    commit();
+
+                    A.only(() => {
+                        const currGoal = declassify(interact.getNextThreshold(threshold, (total + donate)));
+                    });
+                    A.publish(currGoal);
+
+                    //Compute if money gets released or not
+
+                    //Half of the donated funds are released when campaign reaches 50% (25% of overall funds)
+                    //Remaining funds released when the goal is met
+                    // console.log(threshold)
+
+
+                    const isStaged = ((total + donate) >= (currGoal)) ? true : false;
+                    // each([A, B], () => {
+                    //     interact.seeDebug(total + donate, threshold, isStaged);
+                    // });
+
+                    if (isStaged) {
+                        const rel = currGoal - released; //balance();
+                        const bal = balance();
+
+                        each([A, B], () => {
+                            interact.seeDebug(currGoal, released);
+                        });
+
+                        if (rel > bal) {
+                            transfer(balance()).to(A);
+                            commit();
+                            exit();
+                        } else {
+                            transfer(rel).to(A);
+                        }
+
+                        //Notify everyone about the partial release of funds
+                        each([A, B], () => {
+                            interact.seeReleased(rel);
+                        });
+
+                        [total, released] = [total + donate, released + rel];
+                        continue;
+                    } else {
+                        [total, released] = [total + donate, released];
+                        continue;
+                    }
+
+                    // continue;
                 }
-                
-                // continue;
+            } else {
+                //same thing, except our first donation did not meet a threshold
+                var [total, released] = [donationAmount, 0];
+                invariant(true);
+                while (total <= goal && goal > balance()) {
+                    commit();
+
+                    //Bob will contribute more money
+                    B.only(() => {
+                        const donate = declassify(interact.getContribution());
+                    });
+
+                    //Publish the donation and pay into contract
+                    B.publish(donate).pay(donate);
+                    //Notify everyone that someone just donated
+                    each([A, B], () => {
+                        interact.seeDonated(donate, (total + donate));
+                    });
+
+                    commit();
+
+                    A.only(() => {
+                        const currGoal = declassify(interact.getNextThreshold(threshold, (total + donate)));
+                    });
+                    A.publish(currGoal);
+
+                    //Compute if money gets released or not
+
+                    //Half of the donated funds are released when campaign reaches 50% (25% of overall funds)
+                    //Remaining funds released when the goal is met
+                    // console.log(threshold)
+
+
+                    const isStaged = ((total + donate) >= (currGoal)) ? true : false;
+                    // each([A, B], () => {
+                    //     interact.seeDebug(total + donate, threshold, isStaged);
+                    // });
+
+                    if (isStaged) {
+                        const rel = currGoal - released; //balance();
+                        const bal = balance();
+
+                        each([A, B], () => {
+                            interact.seeDebug(currGoal, released);
+                        });
+
+                        if (rel > bal) {
+                            transfer(balance()).to(A);
+                            commit();
+                            exit();
+                        } else {
+                            transfer(rel).to(A);
+                        }
+
+                        //Notify everyone about the partial release of funds
+                        each([A, B], () => {
+                            interact.seeReleased(rel);
+                        });
+
+                        [total, released] = [total + donate, released + rel];
+                        continue;
+                    } else {
+                        [total, released] = [total + donate, released];
+                        continue;
+                    }
+
+                    // continue;
+                }
             }
+
+            //Keep donating until the goal is reached
+            //var [total, released] = [donationAmount, firstGoal];
+
 
             //Release the remaining funds
             transfer(balance()).to(A);

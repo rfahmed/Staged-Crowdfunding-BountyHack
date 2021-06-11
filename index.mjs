@@ -75,20 +75,11 @@ import { ask, yesno, done } from '@reach-sh/stdlib/ask.mjs';
         console.log(`${fmt(amt)} was just released to Alice`);
     }
 
-    interact.getNextThreshold = (thresh, amt) => {
-        for (var i = 0; i < 5; i++) {
-            if (thresh[i] > amt) {
-                return thresh[i];
-            } 
-        }
-        return -1;
+    interact.seeDebug = (first, second) => {
+        console.log(`First value is ${fmt(first)}`);
+        console.log(`Second value is ${fmt(second)}`);
+        // console.log(`Third value is ${third}`);
     }
-
-    // interact.seeDebug = (first, second, third) => {
-    //     console.log(`First value is ${fmt(first)}`);
-    //     console.log(`Second value is ${fmt(second)}`);
-    //     console.log(`Third value is ${third}`);
-    // }
 
     if (isAlice) {
         const amt = await ask(
@@ -101,8 +92,25 @@ import { ask, yesno, done } from '@reach-sh/stdlib/ask.mjs';
         );
         const newArr = JSON.parse("[" + thresholds + "]");
         const finalArr = Array.from(newArr);
-        console.log(typeof(finalArr))
+        // console.log(typeof(finalArr))
         interact.threshold = finalArr;
+
+        interact.getNextThreshold = (thresh, amt) => {
+            // console.log(`amt is ${fmt(amt)}`);
+            // console.log(`first threshold is ${thresh[0]}`);
+            for (var i = 0; i < 5; i++) {
+                // console.log(`before the if, i is ${i}`);
+                console.log(`thresh[i] > amt? ${stdlib.ge(amt, thresh[i])}`);
+                // console.log(`typeof t ${typeof(thresh[i])} and typeof amt ${typeof(amt)}`);
+                //if (stdlib.fxgt(thresh[i], amt)) {
+                if(stdlib.ge(amt, thresh[i])) {
+                    console.log(`The next threshold is ${thresh[i]}. amt is ${fmt(amt)}. i is ${i}`);
+                    //return thresh[i];
+                    return stdlib.parseCurrency(thresh[i]);
+                } 
+            }
+            return -1;
+        }
     } else {
         interact.acceptGoal = async (amt) => {
             const accepted = await ask(
