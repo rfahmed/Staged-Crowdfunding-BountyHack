@@ -18,7 +18,7 @@ function voting(A, B, amt) {
     const [keepGoing, yays, nays] =
         parallelReduce([true, 0, 0])
             .invariant(true)
-            .while(keepGoing && yays < 4)
+            .while(keepGoing && nays < 2)
             .case(B, (() => ({
                 // when: declassify(interact.keepGoing())
             })),
@@ -48,7 +48,7 @@ function voting(A, B, amt) {
     } else {
         transfer(amt).to(willTransfer);
         each([A, B], () => {
-            interact.seeReleased(bal);
+            interact.seeReleased(amt);
         })
     }
 }
@@ -131,15 +131,15 @@ export const main =
                         return [false, total];
                     });
 
-            //Verify the stages were completed with a simple voting system
-            //some while loop
-            //Alice claims a goal complete
-            //Bobs vote
-            //If > 50% of the bobs vote yes, the money for that stage is released
-            //Otherwise the money for that stage is returned
-            //In timeout: Money is returned
             const bal = balance();
-            const amt = threshold[0];
+
+            commit();
+            
+            A.only(() => {
+                const amt = declassify(interact.getThreshold(threshold, 0));
+            })
+
+            A.publish(amt);
 
             if (bal < amt) {
                 transfer(balance()).to(A);
@@ -149,13 +149,31 @@ export const main =
             } else {
                 transfer(amt).to(A);
                 each([A, B], () => {
-                    interact.seeReleased(bal);
+                    interact.seeReleased(amt);
                 })
             }
 
+            commit();
+            
+            A.only(() => {
+                const t1 = declassify(interact.getThreshold(threshold, 1));
+            })
 
-            voting(A, B, threshold[1]);
-            voting(A, B, threshold[2]);
+            A.publish(t1);
+
+            voting(A, B, t1);
+
+
+            commit();
+            
+            A.only(() => {
+                const t2 = declassify(interact.getThreshold(threshold, 2));
+            })
+
+            A.publish(t2);
+
+
+            voting(A, B, t2);
 
             //Release the remaining funds
             transfer(balance()).to(B);
