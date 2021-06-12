@@ -11,26 +11,31 @@ const commonInterface = {
     seeDebug: Fun([UInt, UInt], Null),
 }
 
+const Alice = 
+    {...commonInterface,
+     goal: UInt,
+    threshold: thresh_arr,
+    getNextThreshold: Fun([thresh_arr, UInt, UInt], UInt),
+    getPrevThreshold: Fun([thresh_arr, UInt, UInt], UInt),
+    getFirstThreshold: Fun([thresh_arr], UInt),
+    setGoal: Fun([], UInt), //sets the goal for the fundraising campaign and returns it
+    }
+
+const Bob = 
+{
+    ...commonInterface,
+    contribution: UInt,
+    getContribution: Fun([], UInt),
+    acceptGoal: Fun([UInt], Null), //donates some amount of money to the goal and returns that it
+}
+
 const DEADLINE = 10;
 
 export const main =
     Reach.App(
         {},
-        [Participant('Alice', {
-            ...commonInterface,
-            goal: UInt,
-            threshold: thresh_arr,
-            getNextThreshold: Fun([thresh_arr, UInt, UInt], UInt),
-            getPrevThreshold: Fun([thresh_arr, UInt, UInt], UInt),
-            getFirstThreshold: Fun([thresh_arr], UInt),
-            setGoal: Fun([], UInt), //sets the goal for the fundraising campaign and returns it
-        }),
-        Participant('Bob', {
-            ...commonInterface,
-            contribution: UInt,
-            getContribution: Fun([], UInt),
-            acceptGoal: Fun([UInt], Null), //donates some amount of money to the goal and returns that it
-        })],
+        [Participant('Alice', Alice),
+        Participant('Bob', Bob)],
         (A, B) => {
 
             function donateRoutine(t, r, goal){

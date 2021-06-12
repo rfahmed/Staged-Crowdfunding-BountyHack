@@ -11,7 +11,7 @@ import * as reach from '@reach-sh/stdlib/ETH';
 const handToInt = {'ROCK': 0, 'PAPER': 1, 'SCISSORS': 2};
 const intToOutcome = ['Bob wins!', 'Draw!', 'Alice wins!'];
 const {standardUnit} = reach;
-const defaults = {defaultFundAmt: '10', defaultWager: '25', standardUnit};
+const defaults = {defaultFundAmt: '10', defaultGoal: '25', standardUnit};
 
 // new variables im adding
 const decision = ['Alice was voted unsuccessful.', 'Alice was voted successful.'];
@@ -62,16 +62,29 @@ class Player extends React.Component {
   playHand(hand) { this.state.resolveHandP(hand); }
 }
 
+class commonInterface extends React.Component {
+  random() { return reach.hasRandom.random(); }
+  informTimeout() {this.setState({view: 'Timeout'}); }
+
+}
+
 class Deployer extends Player {
   constructor(props) {
     super(props);
-    this.state = {view: 'SetWager'};
+    this.state = {view: 'SetGoal'};
   }
-  setWager(wager) { this.setState({view: 'Deploy', wager}); }
+  setGoal(goal, def1, def2, def3, def4, def5) { this.setState({view: 'Deploy', goal, def1, def2, def3, def4, def5}); }
   async deploy() {
+    // important backend line 
     const ctc = this.props.acc.deploy(backend);
     this.setState({view: 'Deploying', ctc});
-    this.wager = reach.parseCurrency(this.state.wager); // UInt
+    this.goal = reach.parseCurrency(this.state.goal); // UInt
+    this.def1 = reach.parseCurrency(this.state.def1);
+    this.def2 = reach.parseCurrency(this.state.def2);
+    this.def3 = reach.parseCurrency(this.state.def3);
+    this.def4 = reach.parseCurrency(this.state.def4);
+    this.def5 = reach.parseCurrency(this.state.def5);
+
     backend.Alice(ctc, this);
     const ctcInfoStr = JSON.stringify(await ctc.getInfo(), null, 2);
     this.setState({view: 'WaitingForAttacher', ctcInfoStr});

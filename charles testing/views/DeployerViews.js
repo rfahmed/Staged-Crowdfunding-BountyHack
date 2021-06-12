@@ -18,32 +18,42 @@ exports.Wrapper = class extends React.Component {
   }
 }
 
-exports.SetWager = class extends React.Component {
+exports.SetGoal = class extends React.Component {
   render() {
-    const {parent, defaultWager, standardUnit} = this.props;
-    const wager = (this.state || {}).wager || defaultWager;
+    const {parent, defaultGoal, standardUnit} = this.props;
+    const goal = (this.state || {}).goal || defaultGoal;
+    const def1= 10, def2 = 25, def3 = 50, def4 = 70, def5 = 90;
     return (
       <div>
-        <input
-          type='number'
-          placeholder={defaultWager}
-          onChange={(e) => this.setState({wager: e.currentTarget.value})}
-        /> {standardUnit}
+        <input type='number' placeholder={defaultGoal} onChange={(e) => this.setState({goal: e.currentTarget.value})}/> 
+        {standardUnit}
+        <input type='number' placeholder={def1} onChange={(e) => this.setState({def1: e.currentTarget.value})}/>
+        {standardUnit}
+        <input type='number' placeholder={def2} onChange={(e) => this.setState({def2: e.currentTarget.value})}/>
+        {standardUnit}
+        <input type='number' placeholder={def3} onChange={(e) => this.setState({def3: e.currentTarget.value})}/>
+        {standardUnit}
+        <input type='number' placeholder={def4} onChange={(e) => this.setState({def4: e.currentTarget.value})}/>
+        {standardUnit}
+        <input type='number' placeholder={def5} onChange={(e) => this.setState({def5: e.currentTarget.value})}/>
+        {standardUnit}
         <br />
         <button
-          onClick={() => parent.setWager(wager)}
+          onClick={() => parent.setGoal(goal, def1, def2, def3, def4, def5)}
         >Set goal</button>
       </div>
     );
   }
 }
 
+
 exports.Deploy = class extends React.Component {
   render() {
-    const {parent, wager, standardUnit} = this.props;
+    const {parent, goal, standardUnit, def1, def2, def3, def4, def5} = this.props;
     return (
       <div>
-        Wager (pay to deploy): <strong>{wager}</strong> {standardUnit}
+        Goal (pay to deploy): <strong>{goal}</strong> {standardUnit}
+        Checkpoints: <strong>{def1, def2, def3, def4, def5}</strong>
         <br />
         <button
           onClick={() => parent.deploy()}
