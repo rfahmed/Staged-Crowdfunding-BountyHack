@@ -72,13 +72,17 @@ import { ask, yesno, done } from '@reach-sh/stdlib/ask.mjs';
     }
 
     interact.seeReleased = (amt) => {
-        console.log(`${fmt(amt)} was just released to Alice`);
+        console.log(`${fmt(amt)} was just released`);
     }
 
     interact.seeDebug = (first, second) => {
         console.log(`First value is ${fmt(first)}`);
         console.log(`Second value is ${fmt(second)}`);
         // console.log(`Third value is ${third}`);
+    }
+
+    interact.getThreshold = (thresh, index) => {
+        return stdlib.parseCurrency(stdlib.bigNumberify(thresh[index]));
     }
 
     if (isAlice) {
@@ -95,33 +99,19 @@ import { ask, yesno, done } from '@reach-sh/stdlib/ask.mjs';
         // console.log(typeof(finalArr))
         interact.threshold = finalArr;
 
-        interact.getNextThreshold = (thresh, amt, goal) => {
-            // console.log(`goal is type ${typeof(goal)} and thresh[i] is type ${typeof(thresh[0])}`);
-            for(var i = 0; i < 5; i++){
-                // console.log(`thresh[i] is ${thresh[i]} amt is ${fmt(amt)}`);
-                // console.log(`thresh[i] > amt ? ${stdlib.gt(thresh[i], fmt(amt))}`);
-                if(stdlib.gt(thresh[i], fmt(amt))){
-                    // console.log(`returned thresh[i] is ${stdlib.bigNumberify(thresh[i])}`);
-                    return stdlib.parseCurrency(stdlib.bigNumberify(thresh[i]));
-                }
-            }
-            // console.log(`returned goal is ${goal}`);
-            return goal;
-        }
-
-        interact.getPrevThreshold = (thresh, amt, goal) => {
-            for(var i = 4; i >= 0; i--){
-                if(stdlib.lt(thresh[i], fmt(amt))){
-                    return stdlib.parseCurrency(stdlib.bigNumberify(thresh[i]));
-                }
-            }
-            return thresh[0];
-        }
-
-        interact.getFirstThreshold = (thresh) => {
-            return stdlib.parseCurrency(stdlib.bigNumberify(thresh[i]));
-        }
-
+        // interact.getNextThreshold = (thresh, amt, goal) => {
+        //     // console.log(`goal is type ${typeof(goal)} and thresh[i] is type ${typeof(thresh[0])}`);
+        //     for(var i = 0; i < 5; i++){
+        //         // console.log(`thresh[i] is ${thresh[i]} amt is ${fmt(amt)}`);
+        //         // console.log(`thresh[i] > amt ? ${stdlib.gt(thresh[i], fmt(amt))}`);
+        //         if(stdlib.gt(thresh[i], fmt(amt))){
+        //             // console.log(`returned thresh[i] is ${stdlib.bigNumberify(thresh[i])}`);
+        //             return stdlib.parseCurrency(stdlib.bigNumberify(thresh[i]));
+        //         }
+        //     }
+        //     // console.log(`returned goal is ${goal}`);
+        //     return goal;
+        // }
     } else {
         interact.acceptGoal = async (amt) => {
             const accepted = await ask(
@@ -152,6 +142,15 @@ import { ask, yesno, done } from '@reach-sh/stdlib/ask.mjs';
                 // process.exit(0);
             }
         };
+
+        interact.getVote = async () => {
+            const isDeserving = await ask(`Has Alice done a good job to release the next batch of funds?`, yesno);
+            if(isDeserving){
+                return {yes: 1, no: 0};
+            }else{
+                return {yes: 0, no: 1};
+            }
+        }
         
     }
 
