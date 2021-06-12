@@ -5,6 +5,7 @@ const thresh_arr = Array(UInt, 3);
 const commonInterface = {
     informTimeout: Fun([], Null),
     getThreshold: Fun([Array(UInt, 3), UInt], UInt),
+    seeDone: Fun([], Null),
 }
 
 const DEADLINE = 10;
@@ -167,6 +168,10 @@ export const main =
             transfer(balance()).to(B);
 
             commit();
+
+            each([A, B], () => {
+                interact.seeDone();
+            })
 
             exit();
         }
