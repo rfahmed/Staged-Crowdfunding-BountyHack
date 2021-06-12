@@ -10,27 +10,36 @@ const commonInterface = {
 const DEADLINE = 10;
 
 function voting(A, B, amt) {
-    const [keepGoing, yays, nays] =
-        parallelReduce([true, 0, 0])
-            .invariant(true)
-            .while(keepGoing && nays < 2)
-            .case(B, (() => ({
-                // when: declassify(interact.keepGoing())
-            })),
-                () => {
-                    commit();
-                    B.only(() => {
-                        const { yes, no } = declassify(interact.getVote());
-                    })
-                    B.publish(yes, no);
+    // const [keepGoing, yays, nays] =
+    //     parallelReduce([true, 0, 0])
+    //         .invariant(true)
+    //         .while(keepGoing)
+    //         .case(B, (() => ({
+    //             // when: declassify(interact.keepGoing())
+    //         })),
+    //             () => {
+    //                 commit();
+    //                 B.only(() => {
+    //                     const { yes, no } = declassify(interact.getVote());
+    //                 })
+    //                 B.publish(yes, no);
 
-                    return [true, yays + yes, nays + no];
-                })
-            .timeout(DEADLINE, () => {
-                Anybody.publish();
-                return [false, yays, nays];
-            });
-    const outcome = yays >= nays ? 1 : 0;
+    //                 return [true, yays + yes, nays + no];
+    //             })
+    //         .timeout(DEADLINE, () => {
+    //             Anybody.publish();
+    //             return [false, yays, nays];
+    //         });
+
+    commit(); 
+    B.only(() => {
+        const yes = declassify(interact.yay);
+        const no = declassify(interact.nay);
+    })
+
+    B.publish(yes, no);
+
+    const outcome = yes > no ? 1 : 0;
     const willTransfer = outcome == 1 ? A : B;
 
     const bal = balance();
@@ -59,7 +68,9 @@ export const main =
             ...commonInterface,
             acceptGoal: Fun([UInt], Null), //donates some amount of money to the goal and returns that it
             // keepGoing: Fun([], Bool),
-            getVote: Fun([], Object({ yes: UInt, no: UInt }))
+            // getVote: Fun([], Object({ yes: UInt, no: UInt }))
+            yay: UInt,
+            nay: UInt,
         })],
         (A, B) => {
 
