@@ -14,6 +14,45 @@ const commonInterface = {
 
 const DEADLINE = 10;
 
+function voting(A, B, amt) {
+    const [keepGoing, yays, nays] =
+        parallelReduce([true, 0, 0])
+            .invariant(true)
+            .while(keepGoing && yays < 10)
+            .case(B, (() => ({
+                // when: declassify(interact.keepGoing())
+            })),
+                () => {
+                    commit();
+                    B.only(() => {
+                        const { yes, no } = declassify(interact.getVote());
+                    })
+                    B.publish(yes, no);
+
+                    return [true, yays + yes, nays + no];
+                })
+            .timeout(DEADLINE, () => {
+                Anybody.publish();
+                return [false, yays, nays];
+            });
+    const outcome = yays >= nays ? 1 : 0;
+    const willTransfer = outcome == 1 ? A : B;
+
+    const bal = balance();
+
+    if (bal < amt) {
+        transfer(balance()).to(willTransfer);
+        each([A, B], () => {
+            interact.seeReleased(bal);
+        })
+    } else {
+        transfer(amt).to(willTransfer);
+        each([A, B], () => {
+            interact.seeReleased(bal);
+        })
+    }
+}
+
 export const main =
     Reach.App(
         {},
@@ -24,7 +63,7 @@ export const main =
             // getNextThreshold: Fun([thresh_arr, UInt, UInt], UInt),
             setGoal: Fun([], UInt), //sets the goal for the fundraising campaign and returns it
         }),
-        ParticipantClass('Bob', {
+        Participant('Bob', {
             ...commonInterface,
             contribution: UInt,
             getContribution: Fun([], UInt),
@@ -99,45 +138,29 @@ export const main =
             //If > 50% of the bobs vote yes, the money for that stage is released
             //Otherwise the money for that stage is returned
             //In timeout: Money is returned
-            const [keepGoing, yays, nays] =
-                parallelReduce([true, 0, 0])
-                    .invariant(balance() == total)
-                    .while(keepGoing && yays < 10)
-                    .case(B, (() => ({
-                        // when: declassify(interact.keepGoing())
-                    })),
-                        () => {
-                            commit();
-                            B.only(() => {
-                                const { yes, no } = declassify(interact.getVote());
-                            })
-                            B.publish(yes, no);
-
-                            return [true, yays + yes, nays + no];
-                        })
-                    .timeout(DEADLINE, () => {
-                        Anybody.publish();
-                        return [false, yays, nays];
-                    });
-            const outcome = yays >= nays ? 1 : 0;
-            const willTransfer = outcome == 1 ? A : this;
-
             const bal = balance();
+            const amt = threshold[0];
 
-            if (bal < 25) {
-                transfer(balance()).to(willTransfer);
+            if (bal < amt) {
+                transfer(balance()).to(A);
                 each([A, B], () => {
                     interact.seeReleased(bal);
                 })
             } else {
-                transfer(25).to(willTransfer);
+                transfer(amt).to(A);
                 each([A, B], () => {
                     interact.seeReleased(bal);
                 })
             }
 
+
+            voting(A, B, threshold[1]);
+            voting(A, B, threshold[2]);
+            voting(A, B, threshold[3]);
+            voting(A, B, threshold[4]);
+
             //Release the remaining funds
-            transfer(balance()).to(A);
+            transfer(balance()).to(B);
 
             commit();
 
