@@ -57,7 +57,6 @@ export const main =
         }),
         Participant('Bob', {
             ...commonInterface,
-            getContribution: Fun([], UInt),
             acceptGoal: Fun([UInt], Null), //donates some amount of money to the goal and returns that it
             // keepGoing: Fun([], Bool),
             getVote: Fun([], Object({ yes: UInt, no: UInt }))
@@ -90,30 +89,30 @@ export const main =
                 const goalAccepted = declassify(interact.acceptGoal(goal));
                 // const firstRaise = declassify(interact.donate());
             })
-            B.publish(goalAccepted);
+            B.publish(goalAccepted).pay(goal);
             // commit();
 
-            const [keepRaising, total] =
-                parallelReduce([true, 0])
-                    .invariant(balance() == total)
-                    .while(keepRaising && total < goal)
-                    .case(B, (() => ({
-                        // when: declassify(interact.keepGoing())
-                    })),
-                        () => {
-                            commit();
-                            B.only(() => {
-                                const raisedAmount = declassify(interact.getContribution());
-                            });
+            // const [keepRaising, total] =
+            //     parallelReduce([true, 0])
+            //         .invariant(balance() == total)
+            //         .while(keepRaising && total < goal)
+            //         .case(B, (() => ({
+            //             // when: declassify(interact.keepGoing())
+            //         })),
+            //             () => {
+            //                 commit();
+            //                 B.only(() => {
+            //                     const raisedAmount = declassify(interact.getContribution());
+            //                 });
 
-                            B.publish(raisedAmount).pay(raisedAmount);
+            //                 B.publish(raisedAmount).pay(raisedAmount);
 
-                            return [true, total + raisedAmount];
-                        })
-                    .timeout(DEADLINE, () => {
-                        Anybody.publish();
-                        return [false, total];
-                    });
+            //                 return [true, total + raisedAmount];
+            //             })
+            //         .timeout(DEADLINE, () => {
+            //             Anybody.publish();
+            //             return [false, total];
+            //         });
 
             const bal = balance();
 
