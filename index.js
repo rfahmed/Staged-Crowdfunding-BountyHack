@@ -7,6 +7,16 @@ import './index.css';
 import * as backend from './build/index.main.mjs';
 import * as reach from '@reach-sh/stdlib/ETH';
 
+// old variables from tut
+const handToInt = {'ROCK': 0, 'PAPER': 1, 'SCISSORS': 2};
+const intToOutcome = ['Bob wins!', 'Draw!', 'Alice wins!'];
+const {standardUnit} = reach;
+const defaults = {defaultFundAmt: '10', defaultGoal: '25', standardUnit};
+
+// new variables im adding
+const decision = ['Alice was voted unsuccessful.', 'Alice was voted successful.'];
+
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -16,7 +26,9 @@ class App extends React.Component {
     const acc = await reach.getDefaultAccount();
     const balAtomic = await reach.balanceOf(acc);
     const bal = reach.formatCurrency(balAtomic, 4);
+    // updating current account + balance
     this.setState({acc, bal});
+    // if a native faucet detected -> ask if fund account, else go to alice/bob
     try {
       const faucet = await reach.getFaucet();
       this.setState({view: 'FundAccount', faucet});
@@ -28,17 +40,19 @@ class App extends React.Component {
     await reach.transfer(this.state.faucet, this.state.acc, reach.parseCurrency(fundAmount));
     this.setState({view: 'DeployerOrAttacher'});
   }
+  // goes to DeployerOrAttacher in AppViews
   async skipFundAccount() { this.setState({view: 'DeployerOrAttacher'}); }
+  // depending on what is chosen, goes to *class* deployer or attacher in *index.js*
   selectAttacher() { this.setState({view: 'Wrapper', ContentView: Attacher}); }
   selectDeployer() { this.setState({view: 'Wrapper', ContentView: Deployer}); }
   render() { return renderView(this, AppViews); }
 }
 
-class Donator extends React.Component {
+class Player extends React.Component {
   random() { return reach.hasRandom.random(); }
-  async getDonation() { // Fun([], UInt)
+  async getHand() { // Fun([], UInt)
     const hand = await new Promise(resolveHandP => {
-      this.setState({view: 'GetDonation', playable: true, resolveHandP});
+      this.setState({view: 'GetHand', playable: true, resolveHandP});
     });
     this.setState({view: 'WaitingForResults', hand});
     return handToInt[hand];
@@ -48,16 +62,29 @@ class Donator extends React.Component {
   playHand(hand) { this.state.resolveHandP(hand); }
 }
 
+class commonInterface extends React.Component {
+  random() { return reach.hasRandom.random(); }
+  informTimeout() {this.setState({view: 'Timeout'}); }
+
+}
+
 class Deployer extends Player {
   constructor(props) {
     super(props);
-    this.state = {view: 'SetWager'};
+    this.state = {view: 'SetGoal'};
   }
-  setWager(wager) { this.setState({view: 'Deploy', wager}); }
+  setGoal(goal, def1, def2, def3, def4, def5) { this.setState({view: 'Deploy', goal, def1, def2, def3, def4, def5}); }
   async deploy() {
+    // important backend line 
     const ctc = this.props.acc.deploy(backend);
     this.setState({view: 'Deploying', ctc});
-    this.wager = reach.parseCurrency(this.state.wager); // UInt
+    this.goal = reach.parseCurrency(this.state.goal); // UInt
+    this.def1 = reach.parseCurrency(this.state.def1);
+    this.def2 = reach.parseCurrency(this.state.def2);
+    this.def3 = reach.parseCurrency(this.state.def3);
+    this.def4 = reach.parseCurrency(this.state.def4);
+    this.def5 = reach.parseCurrency(this.state.def5);
+
     backend.Alice(ctc, this);
     const ctcInfoStr = JSON.stringify(await ctc.getInfo(), null, 2);
     this.setState({view: 'WaitingForAttacher', ctcInfoStr});
