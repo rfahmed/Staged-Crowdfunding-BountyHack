@@ -64,7 +64,7 @@ exports.DeployerOrAttacher = class extends React.Component {
           <button
             onClick={() => parent.selectDeployer()}
           >Deployer</button>
-          <br /> Set the amount you want to raise and intermediate checkpoints (up to 5). Begin the campaign!
+          <br /> Set the amount you want to raise and intermediate checkpoints. Begin the campaign!
         </p>
         <p>
           <button

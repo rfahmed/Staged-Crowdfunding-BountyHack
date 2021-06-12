@@ -1,7 +1,7 @@
 import React from 'react';
-import PlayerViews from './PlayerViews';
+import DonateViews from './DonateViews';
 
-const exports = {...PlayerViews};
+const exports = {...DonateViews};
 
 const sleep = (milliseconds) => new Promise(resolve => setTimeout(resolve, milliseconds));
 
@@ -22,24 +22,26 @@ exports.SetGoal = class extends React.Component {
   render() {
     const {parent, defaultGoal, standardUnit} = this.props;
     const goal = (this.state || {}).goal || defaultGoal;
-    const def1= 10, def2 = 25, def3 = 50, def4 = 70, def5 = 90;
+    const def1= (this.state || {}).def1 || 0.0001;
+    const def2= (this.state || {}).def2 || 0.0001;
+    const def3= (this.state || {}).def3 || 0.0001;
     return (
       <div>
+        <p>Goal:</p>
         <input type='number' placeholder={defaultGoal} onChange={(e) => this.setState({goal: e.currentTarget.value})}/> 
         {standardUnit}
+        <br></br>
+        <p>Checkpoints:</p>
         <input type='number' placeholder={def1} onChange={(e) => this.setState({def1: e.currentTarget.value})}/>
         {standardUnit}
         <input type='number' placeholder={def2} onChange={(e) => this.setState({def2: e.currentTarget.value})}/>
         {standardUnit}
         <input type='number' placeholder={def3} onChange={(e) => this.setState({def3: e.currentTarget.value})}/>
         {standardUnit}
-        <input type='number' placeholder={def4} onChange={(e) => this.setState({def4: e.currentTarget.value})}/>
-        {standardUnit}
-        <input type='number' placeholder={def5} onChange={(e) => this.setState({def5: e.currentTarget.value})}/>
-        {standardUnit}
         <br />
+        <br></br>
         <button
-          onClick={() => parent.setGoal(goal, def1, def2, def3, def4, def5)}
+          onClick={() => parent.setGoal(goal, def1, def2, def3)}
         >Set goal</button>
       </div>
     );
@@ -49,11 +51,13 @@ exports.SetGoal = class extends React.Component {
 
 exports.Deploy = class extends React.Component {
   render() {
-    const {parent, goal, standardUnit, def1, def2, def3, def4, def5} = this.props;
+    const {parent, goal, standardUnit, def1, def2, def3} = this.props;
     return (
       <div>
         Goal (pay to deploy): <strong>{goal}</strong> {standardUnit}
-        Checkpoints: <strong>{def1, def2, def3, def4, def5}</strong>
+        Checkpoint 1: <strong>{def1}</strong>
+        Checkpoint 2: <strong>{def2}</strong>
+        Checkpoint 3: <strong>{def3}</strong>
         <br />
         <button
           onClick={() => parent.deploy()}
@@ -78,7 +82,7 @@ exports.WaitingForAttacher = class extends React.Component {
     const origInnerHTML = button.innerHTML;
     button.innerHTML = 'Copied!';
     button.disabled = true;
-    await sleep(1000);
+    await sleep(100000);
     button.innerHTML = origInnerHTML;
     button.disabled = false;
   }
