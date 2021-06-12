@@ -69,12 +69,13 @@ exports.AcceptTerms = class extends React.Component {
   }
 }
 
-exports.WaitingForBob = class extends React.Component {
+exports.Verification = class extends React.Component {
   render() {
     return (
       <div>
-        Waiting for Bob to verify checkpoint!
+        Did Alice do a good job with this checkpoint?
         <br />
+        <button>Yeah Fam, give her the money</button> <button>Nah</button>
       </div>
     );
   }

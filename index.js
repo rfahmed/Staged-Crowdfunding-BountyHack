@@ -73,7 +73,6 @@ class Deployer extends CommonInterface {
     backend.Alice(ctc, this);
     const ctcInfoStr = JSON.stringify(await ctc.getInfo(), null, 2);
     this.setState({view: 'WaitingForAttacher', ctcInfoStr});
-    this.setState({})
   }
 
   render() { return renderView(this, DeployerViews); }
@@ -97,7 +96,7 @@ class Attacher extends CommonInterface {
   }
   termsAccepted() {
     this.state.resolveAcceptedP();
-    this.setState({view: 'WaitingForTurn'});
+    this.setState({view: 'Verification'});
   }
   render() { return renderView(this, AttacherViews); }
 }
