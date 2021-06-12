@@ -1,6 +1,6 @@
 'reach 0.1';
 
-const thresh_arr = Array(UInt, 5);
+const thresh_arr = Array(UInt, 3);
 
 const commonInterface = {
     informTimeout: Fun([], Null),
@@ -9,7 +9,7 @@ const commonInterface = {
     seeThreshold: Fun([thresh_arr], Null),
     seeReleased: Fun([UInt], Null),
     seeDebug: Fun([UInt, UInt], Null),
-    getThreshold: Fun([Array(UInt, 5), UInt], UInt),
+    getThreshold: Fun([Array(UInt, 3), UInt], UInt),
 }
 
 const DEADLINE = 10;
@@ -18,7 +18,7 @@ function voting(A, B, amt) {
     const [keepGoing, yays, nays] =
         parallelReduce([true, 0, 0])
             .invariant(true)
-            .while(keepGoing && yays < 10)
+            .while(keepGoing && yays < 4)
             .case(B, (() => ({
                 // when: declassify(interact.keepGoing())
             })),
@@ -156,8 +156,6 @@ export const main =
 
             voting(A, B, threshold[1]);
             voting(A, B, threshold[2]);
-            voting(A, B, threshold[3]);
-            voting(A, B, threshold[4]);
 
             //Release the remaining funds
             transfer(balance()).to(B);

@@ -32,6 +32,7 @@ import { ask, yesno, done } from '@reach-sh/stdlib/ask.mjs';
         yesno
     );
     if (deployCtc) {
+        // acc.setGasLimit(5000000);
         ctc = acc.deploy(backend);
         const info = await ctc.getInfo();
         console.log(`The contract is deployed as = ${JSON.stringify(info)}`);
@@ -92,7 +93,7 @@ import { ask, yesno, done } from '@reach-sh/stdlib/ask.mjs';
         );
         interact.goal = amt;
         const thresholds = await ask(
-            'What would you like the fundraising thresholds to be (enter comma separated list (limit is 5 but if you have less enter 0s at the))?'
+            'What would you like the fundraising thresholds to be (enter comma separated list (limit is 3 but if you have less enter 0s at the))?'
         );
         const newArr = JSON.parse("[" + thresholds + "]");
         const finalArr = Array.from(newArr);
