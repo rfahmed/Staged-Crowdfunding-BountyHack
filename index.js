@@ -84,6 +84,8 @@ class Attacher extends CommonInterface {
     this.state = {view: 'Attach'};
   }
   attach(ctcInfoStr) {
+    this.yay = reach.bigNumberify(0);
+    this.nay = reach.bigNumberify(0);
     const ctc = this.props.acc.attach(backend, JSON.parse(ctcInfoStr));
     this.setState({view: 'Attaching'});
     backend.Bob(ctc, this);
@@ -99,10 +101,12 @@ class Attacher extends CommonInterface {
     this.setState({view: 'Verification'});
   }
   async getVote(yayV, noV) {
-    this.nay = noV;
-    this.yay = yayV;
+    this.nay = reach.bigNumberify(noV);
+    this.yay = reach.bigNumberify(yayV);
     const y = yayV;
     this.setState({view: 'Ending', y});
+    this.nay = reach.bigNumberify(0);
+    this.yay = reach.bigNumberify(0);
   }
   render() { return renderView(this, AttacherViews); }
 }
