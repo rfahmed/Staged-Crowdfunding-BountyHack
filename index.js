@@ -98,10 +98,10 @@ class Attacher extends CommonInterface {
     this.state.resolveAcceptedP();
     this.setState({view: 'Verification'});
   }
-  async getVote(voteVal) {
-    this.nay = 0;
-    this.yay = voteVal;
-    const y = voteVal;
+  async getVote(yayV, noV) {
+    this.nay = noV;
+    this.yay = yayV;
+    const y = yayV;
     this.setState({view: 'Ending', y});
   }
   render() { return renderView(this, AttacherViews); }

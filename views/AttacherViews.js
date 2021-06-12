@@ -76,8 +76,8 @@ exports.Verification = class extends React.Component {
       <div>
         Did Alice do a good job with this checkpoint?
         <br />
-        <button onClick={() => {parent.getVote(1);}}>Yeah Fam</button> 
-        <button onClick = {() => {parent.getVote(0)}}>Nah</button>
+        <button onClick={() => {parent.getVote(1, 0);}}>Yeah Fam</button> 
+        <button onClick = {() => {parent.getVote(0, 1)}}>Nah</button>
       </div>
     );
   }
