@@ -25,7 +25,7 @@ export const main =
             getFirstThreshold: Fun([thresh_arr], UInt),
             setGoal: Fun([], UInt), //sets the goal for the fundraising campaign and returns it
         }),
-        Participant('Bob', {
+        ParticipantClass('Bob', {
             ...commonInterface,
             contribution: UInt,
             getContribution: Fun([], UInt),
@@ -35,7 +35,7 @@ export const main =
 
             function donateRoutine(t, r, goal){
                 var [total, released] = [t, r];
-                invariant(balance() == total - released);  //Shuts up the compiler, but we should actually find a good invariant to check
+                invariant(balance() == total - released);
                 while (total <= goal && goal > balance()) {
                     commit();
 

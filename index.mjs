@@ -147,8 +147,9 @@ import { ask, yesno, done } from '@reach-sh/stdlib/ask.mjs';
                 return amt;
             }
             else {
-                console.log("Thank you for donating! Please come again.");
-                process.exit(0);
+                console.log("Thank you for donating! Please await voting.");
+                return 0;
+                // process.exit(0);
             }
         };
         
