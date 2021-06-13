@@ -57,6 +57,10 @@ class CommonInterface extends React.Component {
   async seeDoneVoting() {
     this.setState({view: 'VoteIntermission'})
   }
+
+  async goBackToVote() {
+      this.setState({view: 'Verification'})
+  }
 }
 
 class Deployer extends CommonInterface {

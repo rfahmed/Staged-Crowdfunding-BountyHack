@@ -40,6 +40,10 @@ function voting(A, B, amt) {
 
     B.publish(yes, no);
 
+    B.only(() => {
+        interact.seeDoneVoting();
+    })
+
     const outcome = yes > no ? 1 : 0;
     const willTransfer = outcome == 1 ? A : B;
 
@@ -50,6 +54,10 @@ function voting(A, B, amt) {
     } else {
         transfer(amt).to(willTransfer);
     }
+
+    B.only(() => {
+        interact.goBackToVote();
+    })
 }
 
 export const main =
@@ -74,6 +82,7 @@ export const main =
             yay: UInt,
             nay: UInt,
             seeDoneVoting: Fun([], Null),
+            goBackToVote: Fun([], Null),
         })],
         (A, B) => {
 
