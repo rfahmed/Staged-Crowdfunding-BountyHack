@@ -89,7 +89,7 @@ exports.Gratification = class extends React.Component {
     if (y == 1){
       return (
         <div>
-          Damn bro Alice really be grabbing the bag today
+          Alice will receive the money! Thanks for handing over the bag 
         <br /> <button onClick={() => parent.decide(1)}>Vote on the next threshold!</button>
         </div>
 
@@ -99,8 +99,8 @@ exports.Gratification = class extends React.Component {
     else {
       return (
         <div>
-        Alice sad; her bag hath been DENIED
-        <br /> <button onClick={() => parent.decide(0)}>End the contract and get yo dolla dolla billz back</button>
+        Alice's money has been denied. She is sad 
+        <br /> <button onClick={() => parent.decide(0)}>End the contract and get your money back</button>
       </div>
     );
     }
