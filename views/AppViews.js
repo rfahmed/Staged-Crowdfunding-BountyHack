@@ -4,7 +4,7 @@ const exports = {};
 
 exports.Wrapper = class extends React.Component {
   render() {
-    const {bal, standardUnit, parent, content} = this.props;
+    const {content} = this.props;
     return (
       <div className="App">
         <header className="App-header" id="root">

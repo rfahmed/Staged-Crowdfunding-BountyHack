@@ -62,6 +62,15 @@ exports.Timeout = class extends React.Component {
     );
   }
 }
+exports.WaitingVote = class extends React.Component {
+  render() {
+    return (
+      <div>
+        Others have attached to the contract. Waiting for votes to come in ...
+      </div>
+    );
+  }
+}
 
 exports.Ending = class extends React.Component {
   render() {
