@@ -64,6 +64,7 @@ export const main =
             threshold: thresh_arr,
             // getNextThreshold: Fun([thresh_arr, UInt, UInt], UInt),
             setGoal: Fun([], UInt), //sets the goal for the fundraising campaign and returns it
+            showBobAttached: Fun([], UInt),
         }),
         Participant('Bob', {
             ...commonInterface,
@@ -103,6 +104,10 @@ export const main =
             })
             B.publish(goalAccepted).pay(goal);
             // commit();
+
+            A.only(() => {
+                interact.showBobAttached();
+            })
 
             // const [keepRaising, total] =
             //     parallelReduce([true, 0])
