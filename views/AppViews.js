@@ -4,12 +4,12 @@ const exports = {};
 
 exports.Wrapper = class extends React.Component {
   render() {
-    const {bal, content} = this.props;
+    const {bal, content, standardUnit} = this.props;
     return (
       <div className="App">
         <header className="App-header" id="root">
           <h1>Crowdfunding</h1>
-          Balance: {bal} {standardUnit}
+          <h2>Balance: {bal} {standardUnit}</h2>
           {content}
         </header>
       </div>
