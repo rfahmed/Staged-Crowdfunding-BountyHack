@@ -2,6 +2,9 @@
 
 A project for Bounty Hack 2021 [https://bostonblockchainweek.com/event/bounty-hack/] for staged approval crowdfunding methods.
 
+## Demo: 
+Please check out our video or the slideshow on this repo.
+
 ## Current State
 
 The current iteration of the dapp is an interactive crowdfunding application between Alice (the creator of the crowdfunding campaign) and Bob (a member of the public) with up to 3 thresholds.
