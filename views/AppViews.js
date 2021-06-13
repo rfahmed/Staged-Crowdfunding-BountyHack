@@ -4,13 +4,12 @@ const exports = {};
 
 exports.Wrapper = class extends React.Component {
   render() {
-    const bala = reach.balanceOf(acc);
-    const ba = reach.formatCurrency(bala, 4);
+    const {bal, standardUnit, parent} = this.props;
     return (
       <div className="App">
         <header className="App-header" id="root">
           <h1>Crowdfunding</h1>
-          <h2>Balance: {ba} ALGO</h2>
+          Balance: {bal} {standardUnit}
           {content}
         </header>
       </div>
