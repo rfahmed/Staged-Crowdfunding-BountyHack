@@ -4,17 +4,16 @@ A project for Bounty Hack 2021 [https://bostonblockchainweek.com/event/bounty-ha
 
 ## Current State
 
-The current iteration of the dapp is an interactive crowdfunding application between Alice (the creator of the crowdfunding campaign) and Bob (a member of the public) with up to 5 thresholds.
+The current iteration of the dapp is an interactive crowdfunding application between Alice (the creator of the crowdfunding campaign) and Bob (a member of the public) with up to 3 thresholds.
 
 ## Issues and Improvements
 
 * The application currently does not work with muliple Bobs.
 * Timeouts do not work
-* No web based graphical user interface exists. Everything runs in the command line.
 
 ## Instructions
 
-To run, first type `$ make build` to compile changes. Then `$ make run-alice` in one terminal and `$ make run-bob` in another terminal in the same directory.
+To run, please ensure you are in the "frontend" branch and run the command REACH_CONNECTOR_MODE=ALGO ./reach react (for Algorand).
 
 ## Debugging Information
 
