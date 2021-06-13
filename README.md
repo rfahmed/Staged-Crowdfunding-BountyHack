@@ -9,14 +9,11 @@ Please check out our video or the slideshow on this repo.
 
 The current iteration of the dapp is an interactive crowdfunding application between Alice (the creator of the crowdfunding campaign) and Bob (a member of the public) with up to 3 thresholds.
 
-## Issues and Improvements
-
-* The application currently does not work with muliple Bobs.
-* Timeouts do not work
-
 ## Instructions
 
-To run, please ensure you are in the "frontend" branch and run the command REACH_CONNECTOR_MODE=ALGO ./reach react (for Algorand).
+To run, please ensure you are in the "frontend" branch and run the command "REACH_CONNECTOR_MODE=ALGO ./reach react" (for Algorand). To run on Ethereum, change line 8 of index.js to "import * as reach from '@reach-sh/stdlib/ALGO';" and run the command "./reach react".
+
+Please read more about our application in our slideshow BountyHackPresentation.
 
 ## Debugging Information
 
