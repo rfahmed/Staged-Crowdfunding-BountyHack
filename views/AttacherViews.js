@@ -85,10 +85,11 @@ exports.Verification = class extends React.Component {
 
 exports.Gratification = class extends React.Component {
   render() {
-    const {y, parent} = this.props;
+    const {y, parent, bal} = this.props;
     if (y == 1){
       return (
         <div>
+          Current Balance: {bal}
           Damn bro Alice really be grabbing the bag today
         <br /> <button onClick={() => parent.decide(1)}>Vote on the next threshold!</button>
         </div>

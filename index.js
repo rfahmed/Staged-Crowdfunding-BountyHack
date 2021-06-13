@@ -109,6 +109,13 @@ class Attacher extends CommonInterface {
     this.setState({view: 'Verification'});
   }
   async getVote(yayV, noV) {
+    // LAST MINUTE helplplp
+    const acc = await reach.getDefaultAccount();
+    const balAtomic = await reach.balanceOf(acc);
+    const bal = reach.formatCurrency(balAtomic, 4);
+    // updating current account + balance
+    this.setState({acc, bal});
+
     this.nay = reach.bigNumberify(noV);
     this.yay = reach.bigNumberify(yayV);
     const y = yayV;
