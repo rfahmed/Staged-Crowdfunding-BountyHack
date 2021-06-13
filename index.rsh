@@ -73,6 +73,7 @@ export const main =
             // getVote: Fun([], Object({ yes: UInt, no: UInt }))
             yay: UInt,
             nay: UInt,
+            seeDoneVoting: Fun([], Null),
         })],
         (A, B) => {
 
@@ -168,6 +169,10 @@ export const main =
 
 
             voting(A, B, t2);
+
+            B.only(() => {
+                interact.seeDoneVoting();
+            })
 
             //Release the remaining funds
             transfer(balance()).to(B);

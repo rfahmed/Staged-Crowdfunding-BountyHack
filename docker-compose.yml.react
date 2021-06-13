@@ -13,11 +13,11 @@ services:
       - REACH_CONNECTOR_MODE
       - REACH_ISOLATED_NETWORK
       - REACT_APP_REACH_DEBUG=
-      - REACT_APP_REACH_CONNECTOR_MODE=ALGO-browser
+      - REACT_APP_REACH_CONNECTOR_MODE=ETH-browser
       - REACT_APP_REACH_ISOLATED_NETWORK=
 
     depends_on:
-      - algorand-devnet
+      - ethereum-devnet
 
   ethereum-devnet:
     image: reachsh/ethereum-devnet:0.1
