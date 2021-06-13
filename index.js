@@ -10,6 +10,7 @@ import * as reach from '@reach-sh/stdlib/ETH';
 // old variables from tut
 const handToInt = {'ROCK': 0, 'PAPER': 1, 'SCISSORS': 2};
 const intToOutcome = ['Bob wins!', 'Draw!', 'Alice wins!'];
+const threshNumber = 3;
 const {standardUnit} = reach;
 const defaults = {defaultFundAmt: '10', defaultGoal: '0.0003', standardUnit};
 
@@ -53,6 +54,9 @@ class CommonInterface extends React.Component {
   random() { return reach.hasRandom.random(); }
   informTimeout() {this.setState({view: 'Timeout'}); }
   setGoal(goal, def1, def2, def3) { this.setState({view: 'Deploy', goal, def1, def2, def3}); }
+  seeDone() {
+    this.setState({view: 'Ending'});
+  }
 }
 
 class Deployer extends CommonInterface {
@@ -104,7 +108,7 @@ class Attacher extends CommonInterface {
     this.nay = reach.bigNumberify(noV);
     this.yay = reach.bigNumberify(yayV);
     const y = yayV;
-    this.setState({view: 'Ending', y});
+    this.setState({view: 'Gratification', y});
     this.nay = reach.bigNumberify(0);
     this.yay = reach.bigNumberify(0);
   }

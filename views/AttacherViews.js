@@ -83,25 +83,28 @@ exports.Verification = class extends React.Component {
   }
 }
 
-exports.Ending = class extends React.Component {
+exports.Gratification = class extends React.Component {
   render() {
     const {y} = this.props;
     if (y == 1){
       return (
-          <div>
+        <div>
           Damn bro Alice really be grabbing the bag today
+        <br /> <button onClick={this.setState({view: 'Verification'})}>Vote on the next threshold!</button>
         </div>
+
+        
       );
     }
     else {
       return (
         <div>
         Alice sad; her bag hath been DENIED
+        <br /> <button onClick={this.setState({view: 'Ending'})}>End the contract and get yo dolla dolla billz back</button>
       </div>
     );
     }
-  }
-    
+  }    
 }
 
 export default exports;

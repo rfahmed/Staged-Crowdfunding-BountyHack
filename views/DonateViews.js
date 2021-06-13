@@ -63,4 +63,13 @@ exports.Timeout = class extends React.Component {
   }
 }
 
+exports.Ending = class extends React.Component {
+  render() {
+    return (
+      <div>
+        End of the contract. Thanks for crowdfunding with CHAAAIN REAAACTION Co.
+      </div>
+    );
+  }
+}
 export default exports;
