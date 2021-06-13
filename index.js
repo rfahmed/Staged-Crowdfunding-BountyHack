@@ -112,6 +112,14 @@ class Attacher extends CommonInterface {
     this.nay = reach.bigNumberify(0);
     this.yay = reach.bigNumberify(0);
   }
+  async decide(wee) {
+    if (wee == 1){
+      this.setState({view: 'Verification'});
+    }
+    else {
+      this.setState({view: 'Ending'});
+    }
+  }
   render() { return renderView(this, AttacherViews); }
 }
 
