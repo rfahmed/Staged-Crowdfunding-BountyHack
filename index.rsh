@@ -64,7 +64,7 @@ export const main =
             threshold: thresh_arr,
             // getNextThreshold: Fun([thresh_arr, UInt, UInt], UInt),
             setGoal: Fun([], UInt), //sets the goal for the fundraising campaign and returns it
-            showBobAttached: Fun([], UInt),
+            showBobAttached: Fun([], Null),
         }),
         Participant('Bob', {
             ...commonInterface,
