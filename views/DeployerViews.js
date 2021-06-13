@@ -82,7 +82,7 @@ exports.WaitingForAttacher = class extends React.Component {
     const origInnerHTML = button.innerHTML;
     button.innerHTML = 'Copied!';
     button.disabled = true;
-    await sleep(100000);
+    await sleep(1000);
     button.innerHTML = origInnerHTML;
     button.disabled = false;
   }

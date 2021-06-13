@@ -9,7 +9,6 @@ exports.Wrapper = class extends React.Component {
       <div className="App">
         <header className="App-header" id="root">
           <h1>Crowdfunding</h1>
-          Balance: {bal} {standardUnit}
           {content}
         </header>
       </div>
