@@ -2,6 +2,9 @@
 
 A project for Bounty Hack 2021 [https://bostonblockchainweek.com/event/bounty-hack/] for staged approval crowdfunding methods.
 
+## Demo: 
+There is a presentation about our project in this repo, addiionally there is a video demonstrating it: <to be added>.
+
 ## Instructions
 
 To run, first type `$ make build` to compile changes. Then `$ make run-alice` in one terminal and `$ make run-bob` in another terminal in the same directory.
