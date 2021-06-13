@@ -7,7 +7,7 @@ exports.Wrapper = class extends React.Component {
     const {content} = this.props;
     return (
       <div className="App">
-        <header className="App-header" id="root">
+        <header className="different-colored App-header" id="root">
           <h1>Chain Reaction - A Reach Crowdfunding Project</h1>
           {content}
         </header>
