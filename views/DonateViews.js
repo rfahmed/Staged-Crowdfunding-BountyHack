@@ -72,6 +72,16 @@ exports.WaitingVote = class extends React.Component {
   }
 }
 
+exports.VoteIntermission = class extends React.Component {
+  render() {
+    return (
+      <div>
+        Thanks for your votes! Please wait as funds are transported appropriately...
+      </div>
+    );
+  }
+}
+
 exports.Ending = class extends React.Component {
   render() {
     return (

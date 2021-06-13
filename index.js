@@ -54,6 +54,9 @@ class CommonInterface extends React.Component {
   async showBobAttached() {
     this.setState({view: 'WaitingVote'})
   }
+  async seeDoneVoting() {
+    this.setState({view: 'VoteIntermission'})
+  }
 }
 
 class Deployer extends CommonInterface {
