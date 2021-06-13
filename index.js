@@ -8,14 +8,8 @@ import * as backend from './build/index.main.mjs';
 import * as reach from '@reach-sh/stdlib/ETH';
 
 // old variables from tut
-const handToInt = {'ROCK': 0, 'PAPER': 1, 'SCISSORS': 2};
-const intToOutcome = ['Bob wins!', 'Draw!', 'Alice wins!'];
-const threshNumber = 3;
 const {standardUnit} = reach;
 const defaults = {defaultFundAmt: '10', defaultGoal: '0.0003', standardUnit};
-
-// new variables im adding
-const decision = ['Alice was voted unsuccessful.', 'Alice was voted successful.'];
 
 
 class App extends React.Component {
@@ -54,7 +48,7 @@ class CommonInterface extends React.Component {
   random() { return reach.hasRandom.random(); }
   informTimeout() {this.setState({view: 'Timeout'}); }
   setGoal(goal, def1, def2, def3) { this.setState({view: 'Deploy', goal, def1, def2, def3}); }
-  seeDone() {
+  async seeDone() {
     this.setState({view: 'Ending'});
   }
 }
